@@ -59,13 +59,10 @@ while (true) {
         $mayor = $num;
         $menor = $num;
     } else {
-        if ($num > $mayor) {
-            $mayor = $num;
+        $mayor = $num > $mayor ? $num : $mayor;
+        $menor = $num < $menor ? $num : $menor;
         }
-        if ($num < $menor) {
-            $menor = $num;
-        }
-    }
+    
 
     $contadorNumeros++;
 }
