@@ -1,8 +1,8 @@
 <?php
 do{
-echo "introduce un número entre 1-10: ";
-fscanf(STDIN,"%d\n",$n);
-}while($n < 1 && $n > 10);
+    echo "Introduce un número entre 1-10: ";
+    fscanf(STDIN,"%d\n",$n);
+}while($n < 1 || $n > 10);
 
 $numeros = [
     "romano" => ["I","II","III","IV","V","VI","VII","VIII","IX","X"],
@@ -10,7 +10,7 @@ $numeros = [
 ];
 
 do{
- echo "que tipo de numero quieres saber, romano o en texto? ";
+ echo "¿Qué tipo de número quieres saber, romano o en texto? ";
  $tipo = trim(fgets(STDIN));
 }while(!isset($numeros[$tipo]));
 

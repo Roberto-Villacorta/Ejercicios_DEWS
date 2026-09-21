@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PackFlow - Envío y Recepción de Paquetes</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      border-radius: 0 !important;
+    }
+    body {
+      margin: 0;
+      background: #e9eef5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1a2332;
+    }
+    .app {
+      width: 400px;
+      height: 850px;
+      margin: 20px auto;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .page-home-btn {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 999;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 9px 15px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .page-home-btn:hover {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+    @media (max-width: 650px) {
+      .page-home-btn {
+        display: none;
+      }
+    }
+    .top-bar {
+      height: 52px;
+      min-height: 52px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .btn-top-home {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-top-home:hover {
+      background: #eff6ff;
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+    .screen {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      padding: 24px 20px;
+      overflow-y: auto;
+    }
+    .screen.active {
+      display: block;
+    }
+    #login.screen.active {
+      height: 100%;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+    }
+    h2 {
+      margin: 24px 0 12px;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #475569;
+    }
+    p {
+      margin: 0 0 12px;
+      line-height: 1.45;
+    }
+    .muted {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-banner {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      border: none;
+      background: #2563eb;
+      color: #ffffff;
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: none;
+      transition: background 0.15s ease;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .btn:active {
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      box-shadow: none;
+      padding: 12px;
+      font-weight: 600;
+      text-align: left;
+    }
+    .btn-secondary:hover {
+      background: #f1f5f9;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: #2563eb;
+      border: 1px dashed #2563eb;
+      box-shadow: none;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .input {
+      width: 100%;
+      height: 46px;
+      border: 1px solid #94a3b8;
+      background: #ffffff;
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      color: #334155;
+      font-size: 14px;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid;
+    }
+    .badge-green {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #059669;
+    }
+    .badge-blue {
+      background: #eff6ff;
+      color: #1e40af;
+      border-color: #3b82f6;
+    }
+    .badge-amber {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #f59e0b;
+    }
+    .badge-gray {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #94a3b8;
+    }
+    .pill {
+      float: right;
+    }
+    .mail {
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+    .mail:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+    .nav {
+      height: 70px;
+      min-height: 70px;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 4px;
+    }
+    .nav button {
+      flex: 1;
+      height: 100%;
+      border: 0;
+      border-right: 1px solid #f1f5f9;
+      background: #ffffff;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      padding: 0 4px;
+    }
+    .nav button:last-child {
+      border-right: 0;
+    }
+    .nav button.active {
+      color: #0f172a;
+      font-weight: 800;
+      background: #f1f5f9;
+      border-top: 3px solid #2563eb;
+    }
+    .nav-indicator {
+      font-size: 10px;
+      color: #94a3b8;
+      font-weight: 700;
+    }
+    .nav button.active .nav-indicator {
+      color: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+<!-- BOTÓN ARRIBA A LA IZQUIERDA DE LA PÁGINA (PANTALLA COMPLETA) -->
+<button id="page-home-btn" class="page-home-btn" style="display: none;" onclick="go('home')" title="Volver a la página principal">
+  ← Volver a la página principal
+</button>
+
+<div class="app">
+
+  <!-- BARRA SUPERIOR DENTRO DE LA APP: BOTÓN ARRIBA A LA IZQUIERDA -->
+  <div id="top-bar" class="top-bar" style="display: none;">
+    <button id="btn-top-home" class="btn-top-home" onclick="go('home')" title="Volver a la página principal" style="visibility: hidden;">
+      ← Inicio
+    </button>
+    <div style="font-size: 12px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">
+      PackFlow
+    </div>
+    <div style="width: 50px;"></div>
+  </div>
+
+  <!-- PANTALLA: INICIAR SESIÓN -->
+  <div id="login" class="screen active">
+    <div class="card" style="margin-top: 60px; padding: 26px;">
+      <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #2563eb; margin-bottom: 6px;">
+        Plataforma Logística y Envíos
+      </div>
+      <h1>PackFlow</h1>
+      <p class="muted" style="margin-bottom: 24px;">
+        Gestiona el envío, recepción y seguimiento de tus paquetes en tiempo real.
+      </p>
+
+      <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Correo electrónico o ID de cliente</label>
+      <div class="input">alex.martinez@logistica.es</div>
+
+      <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Contraseña de acceso</label>
+      <div class="input" style="letter-spacing: 3px; font-family: monospace;">••••••••••••</div>
+
+      <button class="btn" style="margin-top: 18px;" onclick="go('home')">
+        Entrar a mi panel
+      </button>
+
+      <div style="text-align: center; margin-top: 18px;">
+        <a href="javascript:void(0)" style="color: #2563eb; font-size: 13px; font-weight: 600; text-decoration: none;" onclick="alert('Te hemos enviado las instrucciones de acceso a tu correo de recuperación.')">
+          ¿Has olvidado tus credenciales?
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA: INICIO -->
+  <div id="home" class="screen">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <h1>Hola, Alex</h1>
+      <span class="badge badge-gray">4 en seguimiento</span>
+    </div>
+    <p class="muted">Panel central de tus paquetes y recogidas en curso.</p>
+
+    <div class="card card-banner" style="margin-top: 16px;">
+      <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: #1e40af; letter-spacing: 0.5px;">
+        Próxima entrega estimada
+      </div>
+      <div style="font-size: 28px; font-weight: 800; margin: 6px 0; color: #0f172a;">
+        Hoy, 13:30 - 15:00
+      </div>
+      <span class="muted" style="color: #334155;">
+        1 paquete en reparto final hacia tu dirección (Ref. PK-84291)
+      </span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0;">
+      <button class="card btn-secondary" onclick="go('compose1')">
+        <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #2563eb; margin-bottom: 4px;">Acción rápida</div>
+        <b style="font-size: 14px; color: #0f172a;">Enviar paquete</b>
+        <div class="muted" style="font-size: 11px; margin-top: 2px;">Generar etiqueta</div>
+      </button>
+      <button class="card btn-secondary" onclick="go('received')">
+        <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #059669; margin-bottom: 4px;">Entrantes</div>
+        <b style="font-size: 14px; color: #0f172a;">Mis paquetes</b>
+        <div class="muted" style="font-size: 11px; margin-top: 2px;">3 por recibir</div>
+      </button>
+    </div>
+
+    <h2>Actividad de envíos reciente</h2>
+
+    <div class="card mail" onclick="go('received')">
+      <span class="badge badge-blue pill">En reparto</span>
+      <b style="font-size: 14px; color: #0f172a;">PK-84291 · Paquete electrónica (1.8 kg)</b>
+      <div class="muted" style="margin-top: 4px; font-size: 12px;">
+        Origen: Almacén Central Madrid · Repartidor en ruta (Furgoneta 04)
+      </div>
+    </div>
+
+    <div class="card mail" onclick="go('sent')">
+      <span class="badge badge-green pill">Entregado</span>
+      <b style="font-size: 14px; color: #0f172a;">ENV-60214 · Documentación notarial</b>
+      <div class="muted" style="margin-top: 4px; font-size: 12px;">
+        Destino: Marta Gómez (Valencia) · Firmado en destino hoy a las 10:15
+      </div>
+    </div>
+
+    <div class="card mail" onclick="go('steps')">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <b style="font-size: 13px; color: #2563eb;">¿Necesitas embalar y enviar un paquete?</b>
+          <div class="muted" style="font-size: 12px; margin-top: 2px;">
+            Consulta la guía de pesos, medidas y precinto
+          </div>
+        </div>
+        <span style="font-weight: 700; font-size: 12px; color: #2563eb;">Ver guía</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA: ENVIADOS -->
+  <div id="sent" class="screen">
+    <h1>Paquetes enviados</h1>
+    <p class="muted">Registro y trazabilidad de los envíos que has remitido.</p>
+    
+    <div class="input" style="font-size: 13px;">
+      Filtrar por código de envío (ENV-...), destinatario o ciudad...
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 14px;">
+      <span class="muted" style="font-weight: 600;">4 envíos registrados</span>
+      <span style="font-size: 12px; color: #2563eb; font-weight: 600;">Actualizado en vivo</span>
+    </div>
+
+    <div class="list">
+      <div class="card mail">
+        <span class="badge badge-blue pill">En tránsito</span>
+        <b style="font-size: 14px;">ENV-90214 · Caja Mediana (3.4 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Para: Javier Sola (Zaragoza) · Salida centro de clasificación
+        </div>
+      </div>
+
+      <div class="card mail">
+        <span class="badge badge-amber pill">Recogida lista</span>
+        <b style="font-size: 14px;">ENV-95100 · Sobre acolchado (0.8 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Para: Laura Prieto (Sevilla) · Mensajero asignado para hoy 16:30
+        </div>
+      </div>
+
+      <div class="card mail">
+        <span class="badge badge-green pill">Entregado</span>
+        <b style="font-size: 14px;">ENV-60214 · Documentación notarial (0.3 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Para: Marta Gómez (Valencia) · Entregado y firmado hoy 10:15
+        </div>
+      </div>
+
+      <div class="card mail">
+        <span class="badge badge-green pill">Entregado</span>
+        <b style="font-size: 14px;">ENV-48190 · Bulto voluminoso (12.5 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Para: Talleres Norte (Bilbao) · Entregado el 18 de septiembre
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA: RECIBIDOS -->
+  <div id="received" class="screen">
+    <h1>Recepción de paquetes</h1>
+    <p class="muted">Seguimiento de compras y pedidos dirigidos a tu dirección.</p>
+    
+    <div class="input" style="font-size: 13px;">
+      Introducir localizador de paquete (ej. PK-84291)...
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 14px;">
+      <span class="muted" style="font-weight: 600;">3 paquetes entrantes</span>
+      <span style="font-size: 12px; color: #2563eb; font-weight: 600;">Ordenar: Por fecha de entrega</span>
+    </div>
+
+    <div class="list">
+      <div class="card mail">
+        <span class="badge badge-blue pill">En reparto</span>
+        <b style="font-size: 14px;">PK-84291 · Paquete electrónica (1.8 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Transportista: Express24 · Llegada hoy entre 13:30 y 15:00
+        </div>
+      </div>
+
+      <div class="card mail">
+        <span class="badge badge-gray pill">En tránsito</span>
+        <b style="font-size: 14px;">PK-77302 · Repuestos y accesorios (4.2 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          De: Proveedores Industriales · Centro logístico regional (Mañana)
+        </div>
+      </div>
+
+      <div class="card mail">
+        <span class="badge badge-green pill">Listo en Locker</span>
+        <b style="font-size: 14px;">PK-65104 · Calzado y ropa deportiva (2.0 kg)</b>
+        <div class="muted" style="margin-top: 4px; font-size: 12px;">
+          Punto CityLocker Estación Central · Código PIN de apertura: 8392
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANTALLA: ENVIAR 1 -->
+  <div id="compose1" class="screen">
+    <h1>Enviar un paquete</h1>
+    <div class="badge badge-blue" style="margin-bottom: 16px;">
+      Paso 1 de 2: Destinatario y dimensiones
+    </div>
+
+    <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Nombre y teléfono del destinatario</label>
+    <div class="input">Carlos Mendoza — 677 89 01 23</div>
+
+    <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Dirección de destino y código postal</label>
+    <div class="input">Av. de América 34, 4ºA — 28028 Madrid</div>
+
+    <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Tamaño y tipo de bulto</label>
+    <div class="input">Caja Estándar M (hasta 5 kg · 35x25x20 cm)</div>
+
+    <p class="muted" style="font-size: 12px; margin-top: 8px;">
+      Consejo: asegúrate de no enviar artículos prohibidos o no asegurados y precinta la base con firmeza.
+    </p>
+
+    <button class="btn" style="margin-top: 24px;" onclick="go('compose2')">
+      Continuar a método y tarifa
+    </button>
+  </div>
+
+  <!-- PANTALLA: ENVIAR 2 -->
+  <div id="compose2" class="screen">
+    <h1>Enviar un paquete</h1>
+    <div class="badge badge-blue" style="margin-bottom: 16px;">
+      Paso 2 de 2: Método de recogida y confirmación
+    </div>
+
+    <label style="font-size: 13px; font-weight: 700; color: #0f172a;">Resumen del envío y tarifa</label>
+    <div class="card" style="height: auto; margin-top: 6px; color: #334155; line-height: 1.6; font-size: 13px;">
+      <b>Origen:</b> Tu dirección habitual (Calle Alcalá 92, Madrid)<br>
+      <b>Destino:</b> Carlos Mendoza (Madrid 28028)<br>
+      <b>Paquete:</b> Caja Estándar M (~3.2 kg estimados)<br>
+      <b>Modalidad:</b> Recogida en puerta mañana (09:00 - 13:00)<br>
+      <b>Servicio:</b> Express 24h con seguimiento por SMS y enlace web<br>
+      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 15px; font-weight: 800; color: #0f172a;">
+        Total a pagar: 6,85 € <span style="font-size: 11px; font-weight: 600; color: #64748b;">(IVA incluido)</span>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="margin-bottom: 18px; width: 100%; text-align: center;" onclick="alert('Seguro a todo riesgo de hasta 500 € añadido al envío (+1,50 €).')">
+      + Añadir seguro a todo riesgo de mercancía
+    </button>
+
+    <button class="btn" onclick="alert('¡Envío creado con éxito!\nCódigo asignado: ENV-' + Math.floor(10000 + Math.random() * 90000) + '\nPuedes descargar la etiqueta para imprimir o mostrar el código QR al mensajero.'); go('sent');">
+      Confirmar envío y generar etiqueta QR
+    </button>
+  </div>
+
+  <!-- PANTALLA: GUÍA DE EMBALAJE -->
+  <div id="steps" class="screen">
+    <h1>Guía de embalaje</h1>
+    <p class="muted">Asegura que tus paquetes lleguen en perfecto estado siguiendo estos 3 pasos:</p>
+
+    <div class="card">
+      <div style="font-size: 11px; font-weight: 800; color: #2563eb; text-transform: uppercase;">Paso 01</div>
+      <b style="font-size: 14px;">Elige una caja adecuada y protege el contenido</b>
+      <p class="muted" style="margin: 6px 0 0; font-size: 13px;">
+        Utiliza cartón ondulado resistente. Rellena los huecos con papel kraft o plástico de burbujas para que los objetos no choquen en el transporte.
+      </p>
+    </div>
+
+    <div class="card">
+      <div style="font-size: 11px; font-weight: 800; color: #2563eb; text-transform: uppercase;">Paso 02</div>
+      <b style="font-size: 14px;">Precinta las juntas en forma de 'H'</b>
+      <p class="muted" style="margin: 6px 0 0; font-size: 13px;">
+        Aplica cinta adhesiva resistente a lo largo de la abertura central y sobre los bordes de ambas tapas para evitar aperturas accidentales.
+      </p>
+    </div>
+
+    <div class="card">
+      <div style="font-size: 11px; font-weight: 800; color: #2563eb; text-transform: uppercase;">Paso 03</div>
+      <b style="font-size: 14px;">Pega la etiqueta de envío en una cara plana</b>
+      <p class="muted" style="margin: 6px 0 0; font-size: 13px;">
+        Coloca la etiqueta con el código de barras y QR bien visible sin doblarlo por las esquinas. Si utilizas CityLocker, basta con llevar el QR en el móvil.
+      </p>
+    </div>
+
+    <button class="btn" style="margin-top: 14px;" onclick="go('compose1')">
+      Preparar un nuevo envío ahora
+    </button>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+  <div id="nav" class="nav" style="display: none;">
+    <button data-screen="home" class="active" onclick="go('home')">
+      <span class="nav-indicator">[ 01 ]</span>
+      <span>Inicio</span>
+    </button>
+    <button data-screen="received" onclick="go('received')">
+      <span class="nav-indicator">[ 02 ]</span>
+      <span>Recibir</span>
+    </button>
+    <button data-screen="sent" onclick="go('sent')">
+      <span class="nav-indicator">[ 03 ]</span>
+      <span>Envíos</span>
+    </button>
+    <button data-screen="compose1" onclick="go('compose1')">
+      <span class="nav-indicator">[ 04 ]</span>
+      <span>Enviar</span>
+    </button>
+    <button data-screen="steps" onclick="go('steps')">
+      <span class="nav-indicator">[ 05 ]</span>
+      <span>Guía</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+  function go(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('active');
+      target.scrollTop = 0;
+    }
+    
+    const nav = document.getElementById('nav');
+    const topBar = document.getElementById('top-bar');
+    const btnTopHome = document.getElementById('btn-top-home');
+    const pageHomeBtn = document.getElementById('page-home-btn');
+
+    if (nav) {
+      nav.style.display = (id === 'login') ? 'none' : 'flex';
+      
+      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.nav button[data-screen="${id}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
+
+    if (topBar) {
+      topBar.style.display = (id === 'login') ? 'none' : 'flex';
+    }
+
+    // El botón para volver a inicio NO debe mostrarse en la página de inicio (home) ni en login
+    if (btnTopHome) {
+      btnTopHome.style.visibility = (id === 'home') ? 'hidden' : 'visible';
+    }
+
+    if (pageHomeBtn) {
+      pageHomeBtn.style.display = (id === 'home' || id === 'login') ? 'none' : 'flex';
+    }
+  }
+</script>
+</body>
+</html>

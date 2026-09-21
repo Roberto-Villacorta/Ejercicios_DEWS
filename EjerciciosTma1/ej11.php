@@ -1,5 +1,5 @@
 <?php
-echo "pon una cadena de texto: ";
+echo "Pon una cadena de texto: ";
 
 //formato cadena “Nombre:Apellido:Telefono//OtroNombre:OtroApellido:OtroTelefono// ....... ”
 
