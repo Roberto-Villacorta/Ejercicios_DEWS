@@ -11,7 +11,7 @@ $numeros = [
 
 do{
  echo "¿Qué tipo de número quieres saber, romano o en texto? ";
- $tipo = trim(fgets(STDIN));
+ $tipo =  strtolower(trim(fgets(STDIN)));
 }while(!isset($numeros[$tipo]));
 
 
