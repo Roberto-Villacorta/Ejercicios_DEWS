@@ -1,0 +1,44 @@
+/\*\*
+
+- Ejercicio Tema 2 - DWES
+-
+- Enunciado:
+- Visualizar en la barra de navegación de un navegador la siguiente URI
+- (sin escribirla a mano, y sin utilizar hipervínculos):
+- http://somos.los.mas?listos=del&mundo=entero
+-
+- ¿Qué habría que hacer para visualizar esta otra URI?
+- http://somos.los.mas?listos=del&mundo.entero=
+  \*/
+
+// MÉTODO 1 (Recomendado en PHP / Servidor): Redirección mediante cabecera HTTP Location.
+// Al ejecutarse este script, el servidor envía una cabecera de redirección al cliente,
+// haciendo que el navegador cambie la URI en la barra de direcciones automáticamente.
+
+# /\*
+
+¿QUÉ HABRÍA QUE HACER PARA VISUALIZAR ESTA OTRA URI?
+http://somos.los.mas?listos=del&mundo.entero=
+========================================================================================
+
+1. SI SE UTILIZA REDIRECCIÓN PHP (header Location):
+   Simplemente se sustituye la cabecera Location por la nueva dirección:
+   header("Location: http://somos.los.mas?listos=del&mundo.entero=");
+   exit();
+
+2. SI SE UTILIZA UN FORMULARIO HTML (Método GET):
+   Para la primera URI el formulario tendría:
+   <form action="http://somos.los.mas" method="get">
+   <input type="hidden" name="listos" value="del">
+   <input type="hidden" name="mundo" value="entero">
+   <input type="submit" value="Ir">
+   </form>
+   Para la segunda URI (http://somos.los.mas?listos=del&mundo.entero=):
+   Habría que cambiar el nombre del segundo control a "mundo.entero" y dejar su valor vacío:
+   <form action="http://somos.los.mas" method="get">
+   <input type="hidden" name="listos" value="del">
+   <input type="hidden" name="mundo.entero" value="">
+   <input type="submit" value="Ir">
+   </form>
+   ========================================================================================
+   \*/

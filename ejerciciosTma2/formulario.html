@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ejercicio Tema 2 - Formulario GET</title>
+</head>
+<body>
+    <h2>Opción mediante Formulario HTML (Método GET)</h2>
+    <p>Sin escribir la URL a mano y sin hipervínculos (<code>&lt;a&gt;</code>), usando el envío de un formulario por método GET:</p>
+
+
+    <h3>1. Primera URI:</h3>
+    <form action="http://somos.los.mas" method="get">
+        <input type="hidden" name="listos" value="del">
+        <input type="hidden" name="mundo" value="entero">
+        <button type="submit">Visualizar primera URI</button>
+    </form>
+
+    <br>
+
+    <h3>2. Segunda URI (campo con punto y valor vacío):</h3>
+    <form action="http://somos.los.mas" method="get">
+        <input type="hidden" name="listos" value="del">
+        <input type="hidden" name="mundo.entero" value="">
+        <button type="submit">Visualizar segunda URI</button>
+    </form>
+</body>
+</html>
