@@ -13,7 +13,7 @@ if (empty($_SESSION['palabras'])) {
     echo "<p>No hay verbos guardados todavía.</p>";
 } else {
     echo "<table border='1' cellpadding='6' cellspacing='0'>";
-    echo "<tr><th>Verbo</th><th>Conjugación</th></tr>";
+    echo "<tr><th>Verbo</th><th>Conjugacion</th><th>Presente de Indicativo</th></tr>";
     foreach ($_SESSION['palabras'] as $value) {
         echo "<tr>";
         echo "<td>" . htmlspecialchars($value) . "</td>";
