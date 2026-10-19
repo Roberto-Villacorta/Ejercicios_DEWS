@@ -8,7 +8,8 @@ function cambiarColor($texto, $color){
 } 
 
 function cambiarElTamanio($texto, $tamanio){
-    return "<span style='font-size:" . $tamanio . "px'>" . $texto . "</span>";
+    return "
+    <span style='font-size:" . $tamanio . "px'>" . $texto . "</span>";
 } 
 
 function cambiarLaFuente($texto, $fuente){
@@ -43,6 +44,18 @@ function pintarCheckboxes($nombre, $arrayValueLabel, $seleccionados = []){
         $html .= '<input type="checkbox" name="' . $nombreArray . '" value="' . $valor . '" id="' . $valor . '"' . $checked . '>' . "\n";
         $html .= '<label for="' . $valor . '">' . $etiqueta . '</label><br />' . "\n";
     }
+    return $html;
+}
+
+function pintarBulletPoints($elementos){
+    if (empty($elementos)) {
+        return "";
+    }
+    $html = "<ul>\n";
+    foreach ($elementos as $item) {
+        $html .= "    <li>" . $item . "</li>\n";
+    }
+    $html .= "</ul>\n";
     return $html;
 }
 
