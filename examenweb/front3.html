@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjugador</title>
+</head>
+
+<body>
+    <label for="verbo">Introduzca un verbo</label><br>
+    <input type="text" id="verbo"><br>
+    <button onclick="enviarAccion('conjugacion')">conjugación</button>
+    <button onclick="enviarAccion('conjugar')">conjugar</button><br>
+    <div id="resultado"></div>
+    <label>... y observa el resultado</label>
+
+    <script>
+        function enviarAccion(accion) {
+            var verbo = document.getElementById("verbo").value;
+            var request = new XMLHttpRequest();
+
+            request.open('POST', 'p3.php', true);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            request.onreadystatechange = function () {
+                if (request.readyState === 4 && request.status === 200) {
+                    document.getElementById('resultado').innerHTML = request.responseText;
+                }
+            };
+
+            request.send(`verbo=${encodeURIComponent(verbo)}&param2=${encodeURIComponent(accion)}`);
+        }
+    </script>
+</body>
+
+</html>

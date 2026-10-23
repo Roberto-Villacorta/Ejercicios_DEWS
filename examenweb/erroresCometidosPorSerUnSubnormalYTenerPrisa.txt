@@ -1,0 +1,55 @@
+Primero que nada soy retrasado mental no, en fin, las cosas que he hecho fatal:
+
+1. Errores en 
+
+front3.html
+Nombre de parámetro incompatible con PHP (Error crítico):
+
+En las líneas 26 y 35 envías:
+javascript
+request.send(`valor=${verbo}&param2=conjugar`);
+En 
+
+p3.php
+ se espera $_POST["verbo"], no $_POST["valor"]. Por tanto, PHP nunca recibe el verbo.
+Falta una w en la cabecera Content-Type (Error crítico):
+
+En las líneas 22 y 31 tienes:
+javascript
+request.setRequestHeader('Content-Type','application/x-ww-form-urlencoded')
+Debe ser application/x-www-form-urlencoded. Con la errata (-ww-), el servidor no interpreta los datos como formulario y $_POST queda vacío.
+Etiqueta </body> mal ubicada (Error HTML):
+
+En la línea 10:
+html
+<input type="text" id="verbo"></body><br>
+Hay un </body> de cierre que corta el cuerpo del documento antes de los botones y el script, y luego vuelve a cerrarse en la línea 38.
+Falta verificar el estado de la petición AJAX (Error funcional):
+
+En las líneas 23 y 32 asignas:
+javascript
+request.onreadystatechange = function(){
+    document.getElementById('resultado').innerHTML = request.responseText; 
+}
+onreadystatechange se dispara en los estados 1, 2, 3 y 4. Debes comprobar que la petición ha finalizado y ha tenido éxito:
+javascript
+if (request.readyState === 4 && request.status === 200) { ... }
+Instancia global compartida de XMLHttpRequest (Buena práctica):
+
+La variable var request = new XMLHttpRequest es global. Si se pulsan los botones rápidamente, una petición puede cancelar o interferir con la otra. Conviene instanciarla dentro de cada función (o unificar ambas llamadas). Además, faltan los paréntesis new XMLHttpRequest().
+2. Errores en 
+
+p3.php
+Acceso a claves de $_POST sin comprobar isset (Avisos/Warnings de PHP):
+
+En la línea 4:
+php
+if(isset($_POST["verbo"]) && $_POST["param2"] == "conjugar"){
+Si $_POST["param2"] no se envía, se genera un Warning: Undefined array key "param2".
+En el else (línea 7):
+php
+echo conjugacion($_POST["verbo"]);
+No se comprueba si $_POST["verbo"] existe. Si alguien accede a la página sin enviar el formulario (por GET o sin datos), saltará Warning: Undefined array key "verbo".
+Lógica en el bloque else:
+
+El else asume que cualquier petición que no sea "conjugar" es para "conjugacion", incluso si no se envió param2 o si contiene un valor inválido.
