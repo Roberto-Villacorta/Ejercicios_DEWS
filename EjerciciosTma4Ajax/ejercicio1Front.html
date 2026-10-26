@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var xmlhttp;
+        function accionAjax(){
+            document.getElementById('resultado').innerHTML = xmlhttp.responseText;
+        }
+        function usarAjax(){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'ej1back.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); 
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    accionAjax();
+                }
+            }
+            xmlhttp.send(`nombre=${document.getElementById('nombre').value}`);
+        }
+
+        //usarAjaxConGet
+        /*
+        function usarAjaxGet(){
+            xmlhttp = new XMLHttpRequest();
+            var nombre = encodeURIComponent(document.getElementById('nombre').value);
+            xmlhttp.open('GET', `ej1back.php?nombre=${nombre}`, true);
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    accionAjax();
+                }
+            }
+            xmlhttp.send();
+
+        }
+        */
+    </script>
+</head>
+<body>
+    <h1>SALUDADOR</h1><br><br>
+    Introduce tú nombre<input type="text" id="nombre"><br><br>
+    <div id="resultado"></div><br>
+    <button onclick="usarAjax()">Saludar</button>
+</body>
+</html>

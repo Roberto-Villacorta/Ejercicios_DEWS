@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3 - Versión 2 (Front: AJAX)</title>
+    <script>
+        function cambiarIdiomaAjax() {
+            // PISTA 1: Obtener el valor del radio button seleccionado
+            const idiomaSeleccionado = document.querySelector('input[name="idioma"]:checked').value;
+
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'v2_back.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    // PISTA 2: Desempaquetar con split(';')
+                    const etiquetas = xmlhttp.responseText.split(';');
+
+                    // Actualizamos las etiquetas de los input-text y el botón
+                    document.getElementById('lblPalabra').textContent = etiquetas[0] + ":";
+                    document.getElementById('lblTraduccion').textContent = etiquetas[1] + ":";
+                    document.getElementById('btnEnviar').value = etiquetas[2];
+                }
+            };
+
+            xmlhttp.send(`idioma=${encodeURIComponent(idiomaSeleccionado)}`);
+        }
+    </script>
+</head>
+<body>
+    <h2>Ejercicio 3 - Versión 2: AJAX con implode / split</h2>
+    <p>Al cambiar el radio button, se realiza una petición <strong>AJAX</strong> al servidor que devuelve las etiquetas empaquetadas con <code>implode()</code> y se desempaquetan en JS con <code>split()</code>.</p>
+
+    <div class="formulario">
+        <form onsubmit="return false;">
+            <div class="banderas">
+                <label>
+                    <input type="radio" name="idioma" value="ES" checked onchange="cambiarIdiomaAjax()">
+                    🇪🇸 Español
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="EN" onchange="cambiarIdiomaAjax()">
+                    🇬🇧 English
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="FR" onchange="cambiarIdiomaAjax()">
+                    🇫🇷 Français
+                </label>
+            </div>
+
+            <div class="campo">
+                <label id="lblPalabra" for="palabra">Palabra:</label>
+                <input type="text" id="palabra" name="palabra">
+            </div>
+
+            <div class="campo">
+                <label id="lblTraduccion" for="traduccion">Traducción:</label>
+                <input type="text" id="traduccion" name="traduccion">
+            </div>
+
+            <input type="submit" id="btnEnviar" value="Enviar">
+        </form>
+    </div>
+</body>
+</html>

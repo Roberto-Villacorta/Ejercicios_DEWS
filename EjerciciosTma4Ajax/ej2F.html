@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var xmlhttp;
+        function accionAjax(){
+            document.getElementById('provincias').innerHTML = xmlhttp.responseText;
+        }
+        function provinciasSegunComunidad(){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'ej2B.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); 
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    accionAjax();
+                }
+            }
+            xmlhttp.send(`comunidades=${document.getElementById('comunidades').value}`);
+        }
+        function cargarComunidades(){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'ej2B.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); 
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    document.getElementById('comunidades').innerHTML = xmlhttp.responseText;
+                    provinciasSegunComunidad();
+                }
+            }
+            xmlhttp.send();
+        }
+
+    </script>
+</head>
+<body onload="cargarComunidades()">
+    <h1>comunidades autonomas</h1>
+    <div id="contenedor">
+        <select name="comunidades" id="comunidades" onchange="provinciasSegunComunidad()"></select>
+        <select name="provincias" id="provincias"></select>
+    </div>
+    <h2> Selecciona la comunidad y ve como cambia las provincias</h2>
+    <h3>Observe el cambio de provincias gracias a AJAX </h3>
+</body>
+</html>

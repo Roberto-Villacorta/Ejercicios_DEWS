@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3 - Versión 3 (Front: Solo JS tras carga inicial)</title>
+    <script>
+        // Variable en memoria donde guardaremos todas las traducciones
+        let traducciones = {};
+
+        // 1. En la primera carga pedimos todas las traducciones al servidor
+        function cargarTraduccionesIniciales() {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('GET', 'v3_back.php', true);
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    traducciones = JSON.parse(xmlhttp.responseText);
+                    // Actualizamos etiquetas con el radio button seleccionado inicialmente
+                    cambiarIdiomaJS();
+                }
+            };
+            xmlhttp.send();
+        }
+
+        // 2. Cambio de etiquetas con JavaScript puro (SIN AJAX)
+        function cambiarIdiomaJS() {
+            // PISTA 1: Obtener el valor del radio button marcado
+            const radioSeleccionado = document.querySelector('input[name="idioma"]:checked');
+            if (!radioSeleccionado) return;
+
+            const idioma = radioSeleccionado.value;
+            const etiquetas = traducciones[idioma];
+
+            if (etiquetas) {
+                // Actualizamos directamente en el DOM desde los datos en memoria
+                document.getElementById('lblPalabra').textContent = etiquetas[0] + ":";
+                document.getElementById('lblTraduccion').textContent = etiquetas[1] + ":";
+                document.getElementById('btnEnviar').value = etiquetas[2];
+            }
+        }
+    </script>
+</head>
+<body onload="cargarTraduccionesIniciales()">
+    <h2>Ejercicio 3 - Versión 3: Proveer Todo en Primera Carga y Cambio con JS</h2>
+    <p>En la primera carga se descargan todas las traducciones de <code>v3_back.php</code>. Luego, al cambiar de radio button, las etiquetas se actualizan <strong>únicamente con JavaScript local, sin peticiones AJAX</strong>.</p>
+
+    <div class="formulario">
+        <form onsubmit="return false;">
+            <div class="banderas">
+                <label>
+                    <input type="radio" name="idioma" value="ES" checked onchange="cambiarIdiomaJS()">
+                    🇪🇸 Español
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="EN" onchange="cambiarIdiomaJS()">
+                    🇬🇧 English
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="FR" onchange="cambiarIdiomaJS()">
+                    🇫🇷 Français
+                </label>
+            </div>
+
+            <div class="campo">
+                <label id="lblPalabra" for="palabra">Palabra:</label>
+                <input type="text" id="palabra" name="palabra">
+            </div>
+
+            <div class="campo">
+                <label id="lblTraduccion" for="traduccion">Traducción:</label>
+                <input type="text" id="traduccion" name="traduccion">
+            </div>
+
+            <input type="submit" id="btnEnviar" value="Enviar">
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 3 - Versión 1 (Front: Redibujado entero)</title>
+</head>
+<body>
+    <h2>Ejercicio 3 - Versión 1: Redibujado Completo</h2>
+    <p>Al seleccionar una bandera se envía el formulario por <strong>POST</strong> y la página se recarga por completo desde el servidor.</p>
+
+    <div class="formulario">
+        <!-- Formulario que envía a v1_back.php al cambiar el radio button -->
+        <form action="v1_back.php" method="POST">
+            <div class="banderas">
+                <label>
+                    <input type="radio" name="idioma" value="ES" checked onchange="this.form.submit()">
+                    🇪🇸 Español
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="EN" onchange="this.form.submit()">
+                    🇬🇧 English
+                </label>
+                <label>
+                    <input type="radio" name="idioma" value="FR" onchange="this.form.submit()">
+                    🇫🇷 Français
+                </label>
+            </div>
+
+            <div class="campo">
+                <label id="lblPalabra" for="palabra">Palabra:</label>
+                <input type="text" id="palabra" name="palabra">
+            </div>
+
+            <div class="campo">
+                <label id="lblTraduccion" for="traduccion">Traducción:</label>
+                <input type="text" id="traduccion" name="traduccion">
+            </div>
+
+            <input type="submit" id="btnEnviar" value="Enviar">
+        </form>
+    </div>
+</body>
+</html>

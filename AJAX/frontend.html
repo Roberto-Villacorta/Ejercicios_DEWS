@@ -7,9 +7,29 @@
 </head>
 <body>
     <button onclick="holamundo()">Macarrones con tomatico</button>
-    <script>
-        function holamundo(){
-            console.log("tremendos macarrones")
+   <script>
+    //Pasos para hacer un ajax
+        function enviarAccion() {
+            //paso 1 crear el objeto de comunicación
+            var request = new XMLHttpRequest();
+
+            //declarar método de comunicación, a que clase php nos comunicamos y el tipo de comunicación 
+            //( true=asincrono, false=sincrono)
+            request.open('POST', 'backend.php', true);
+            //decirle que tipo de dato le estamos mandando y que vamos a recivir
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            //La función asincrona que deseamos ejecutar cuando termine de cargar el script
+            request.onreadystatechange = function () {
+                //readyState === 4 significa que la petición ha terminado
+                //status === 200 significa que la petición ha sido exitosa
+                if (request.readyState === 4 && request.status === 200) {
+                    //La respuesta se encuentra en request.responseText
+                    document.getElementById('resultado').innerHTML = request.responseText;
+                }
+            };
+            //mandamos el post con lo que deseamos enviar
+            request.send('accion=hola&param2=mundo');
         }
     </script>
 </body>
