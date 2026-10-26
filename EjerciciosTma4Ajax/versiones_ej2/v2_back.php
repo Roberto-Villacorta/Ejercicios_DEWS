@@ -1,8 +1,5 @@
 <?php
-// Indicamos cabecera para devolver formato JSON al cliente
 header('Content-Type: application/json; charset=utf-8');
-
-// Servidor con los datos de todas las comunidades y sus provincias
 $comunidades = [
     'Andalucía' => ['Almería', 'Cádiz', 'Córdoba', 'Granada', 'Huelva', 'Jaén', 'Málaga', 'Sevilla'],
     'Aragón' => ['Huesca', 'Teruel', 'Zaragoza'],
@@ -27,3 +24,5 @@ $comunidades = [
 
 // Se devuelven todas las comunidades y provincias completas en la respuesta JSON
 echo json_encode($comunidades, JSON_UNESCAPED_UNICODE);
+//como se haría con XML
+//echo xmlrpc_encode($comunidades);

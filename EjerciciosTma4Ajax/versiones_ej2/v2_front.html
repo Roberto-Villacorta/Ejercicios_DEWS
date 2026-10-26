@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Versión 2: Front (Descarga inicial y cambio con JS)</title>
     <script>
-        // Variable donde guardaremos todos los datos descargados del servidor
         let datosComunidades = {};
 
-        // 1. Petición inicial al servidor: descarga todas las comunidades y provincias de una sola vez
         function cargarDatosServidor() {
             const xmlhttp = new XMLHttpRequest();
             xmlhttp.open('GET', 'v2_back.php', true);
@@ -16,8 +14,8 @@
                 if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                     // Parseamos el JSON que envía el servidor
                     datosComunidades = JSON.parse(xmlhttp.responseText);
-
-                    // Rellenamos el primer select (comunidades)
+                    //En caso de xmlrpc xmlrpc no es más que xml enfocado a intercambio de datos
+                    //datosComunidades = xmlrpc_decode(xmlhttp.responseText);
                     const selectComunidades = document.getElementById('comunidades');
                     let opcionesComunidades = "";
 
@@ -26,19 +24,14 @@
                     }
                     selectComunidades.innerHTML = opcionesComunidades;
 
-                    // Cargamos las provincias de la primera comunidad por defecto
                     cambiarProvincias();
                 }
             };
             xmlhttp.send();
         }
-
-        // 2. Cambio de provincias: se ejecuta en local ÚNICAMENTE con JavaScript (SIN AJAX)
         function cambiarProvincias() {
             const comunidadSeleccionada = document.getElementById('comunidades').value;
             const selectProvincias = document.getElementById('provincias');
-
-            // Leemos del objeto en memoria descargado al inicio (sin ninguna petición HTTP)
             const provincias = datosComunidades[comunidadSeleccionada] || [];
 
             let opcionesProvincias = "";
@@ -52,7 +45,8 @@
 </head>
 <body onload="cargarDatosServidor()">
     <h1>Versión 2: Descarga Inicial Completa + Cambio con JavaScript Local</h1>
-    <p>El cliente hace <strong>una única petición inicial al servidor</strong> (<code>v2_back.php</code>) para descargar todas las comunidades y provincias en JSON. A partir de ahí, los cambios de provincia se procesan <strong>100% en el navegador con JavaScript, sin volver a llamar al servidor</strong>.</p>
+    <p>El cliente hace <strong>una única petición inicial al servidor</strong> (<code>v2_back.php</code>) para descargar todas las comunidades y provincias en JSON. 
+        A partir de ahí, los cambios de provincia se procesan <strong>100% en el navegador con JavaScript, sin volver a llamar al servidor</strong>.</p>
 
     <div id="contenedor">
         <label for="comunidades">Comunidad Autónoma:</label>
