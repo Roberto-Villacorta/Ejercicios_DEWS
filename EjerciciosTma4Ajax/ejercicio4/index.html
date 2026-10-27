@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 4 - Login, Juego y Cambio de Idioma (AJAX)</title>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <div id="seccionBanderas" class="banderas-container">
+            <label class="opcion-bandera">
+                <svg class="bandera-img" viewBox="0 0 750 500">
+                    <rect width="750" height="500" fill="#c60b1e"/>
+                    <rect y="125" width="750" height="250" fill="#ffc400"/>
+                    <circle cx="230" cy="250" r="45" fill="#c60b1e"/>
+                </svg>
+                <input type="radio" name="idioma" value="ES" checked onchange="cambiarIdioma('ES')">
+            </label>
+
+            <label class="opcion-bandera">
+                <svg class="bandera-img" viewBox="0 0 60 30">
+                    <clipPath id="s"><path d="M0,0 v30 h60 v-30 z"/></clipPath>
+                    <clipPath id="t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+                    <g clip-path="url(#s)">
+                        <path d="M0,0 v30 h60 v-30 z" fill="#012169"/>
+                        <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/>
+                        <path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t)" stroke="#C8102E" stroke-width="4"/>
+                        <path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/>
+                        <path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/>
+                    </g>
+                </svg>
+                <input type="radio" name="idioma" value="EN" onchange="cambiarIdioma('EN')">
+            </label>
+        </div>
+        <div id="pantallaLogin">
+            <div class="fila-campo">
+                <label id="lblUsuario" for="inputUsuario">Usuario</label>
+                <input type="text" id="inputUsuario" autocomplete="username">
+            </div>
+            <div class="fila-campo">
+                <label id="lblContrasena" for="inputPassword">Contraseña</label>
+                <input type="password" id="inputPassword" autocomplete="current-password" onkeydown="if(event.key === 'Enter') procesarLogin()">
+            </div>
+            <button type="button" id="btnEntrar" class="btn-entrar" onclick="procesarLogin()">Entrar</button>
+
+            <div class="info-credenciales">
+                <small>Usuarios demo: <strong>admin</strong> / <strong>1234</strong> &nbsp;|&nbsp; <strong>pepe</strong> / <strong>1234</strong></small>
+            </div>
+        </div>
+        <div id="pantallaJuego" class="oculto">
+            <div class="fila-juego-input">
+                <label id="lblIntroduceNumero" for="inputNumero">Introduce un número (1-10)</label>
+                <input type="number" id="inputNumero" min="1" max="10" value="5" onkeydown="if(event.key === 'Enter') procesarJuego()">
+            </div>
+            <button type="button" id="btnJugar" onclick="procesarJuego()">Jugar</button>
+
+            <div id="contenedorResultado" class="resultado-juego oculto">
+                <div class="linea"><span id="lblMiNumero">Mi número:</span> <strong id="valMiNumero"></strong></div>
+                <div class="linea"><span id="lblTuNumero">Tu número:</span> <strong id="valTuNumero"></strong></div>
+                <div class="linea" id="valMensajeResultado"></div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button type="button" id="btnSalir" onclick="volverAlLogin()">Salir</button>
+            </div>
+        </div>
+
+        <div id="pantallaError" class="pantalla-error oculto">
+            <div id="lblMensajeError" class="mensaje-error">Usuario o contraseña no válidos</div>
+            <button type="button" id="btnVolverError" onclick="volverDeError()">Volver</button>
+        </div>
+    </div>
+
+    <script>
+        let idiomaActual = 'ES';
+        let ultimoUsuario = '';
+        let etiquetasActuales = {};
+        let ultimoResultadoJuego = null;
+
+        window.onload = function() {
+            cambiarIdioma('ES');
+        };
+        function cambiarIdioma(idioma) {
+            idiomaActual = idioma;
+
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'backend.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    const respuesta = JSON.parse(xmlhttp.responseText);
+                    if (respuesta.success) {
+                        etiquetasActuales = respuesta.labels;
+                        actualizarTextosDOM();
+                    }
+                }
+            };
+
+            xmlhttp.send(`action=idioma&lang=${encodeURIComponent(idioma)}`);
+        }
+
+        function actualizarTextosDOM() {
+            if (!etiquetasActuales.usuario) return;
+
+            document.getElementById('lblUsuario').textContent = etiquetasActuales.usuario;
+            document.getElementById('lblContrasena').textContent = etiquetasActuales.contrasena;
+            document.getElementById('btnEntrar').textContent = etiquetasActuales.entrar;
+
+            document.getElementById('lblIntroduceNumero').textContent = etiquetasActuales.introduceNumero;
+            document.getElementById('btnJugar').textContent = etiquetasActuales.jugar;
+            document.getElementById('lblMiNumero').textContent = etiquetasActuales.miNumero;
+            document.getElementById('lblTuNumero').textContent = etiquetasActuales.tuNumero;
+            document.getElementById('btnSalir').textContent = etiquetasActuales.salir;
+
+            document.getElementById('lblMensajeError').textContent = etiquetasActuales.loginInvalido;
+            document.getElementById('btnVolverError').textContent = etiquetasActuales.volver;
+
+            if (ultimoResultadoJuego) {
+                if (ultimoResultadoJuego === 'mayor') {
+                    document.getElementById('valMensajeResultado').textContent = etiquetasActuales.mayor;
+                } else if (ultimoResultadoJuego === 'menor') {
+                    document.getElementById('valMensajeResultado').textContent = etiquetasActuales.menor;
+                } else if (ultimoResultadoJuego === 'acierto') {
+                    document.getElementById('valMensajeResultado').textContent = etiquetasActuales.acierto;
+                }
+            }
+        }
+
+        function procesarLogin() {
+            const usuario = document.getElementById('inputUsuario').value.trim();
+            const password = document.getElementById('inputPassword').value;
+
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'backend.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    const respuesta = JSON.parse(xmlhttp.responseText);
+
+                    if (respuesta.success) {
+                        ultimoUsuario = respuesta.usuario;
+
+                        document.getElementById('pantallaLogin').classList.add('oculto');
+                        document.getElementById('pantallaError').classList.add('oculto');
+                        document.getElementById('pantallaJuego').classList.remove('oculto');
+                        document.getElementById('seccionBanderas').classList.remove('oculto');
+
+                        document.getElementById('contenedorResultado').classList.add('oculto');
+                        ultimoResultadoJuego = null;
+                        document.getElementById('inputNumero').value = "5";
+                    } else {
+                        document.getElementById('pantallaLogin').classList.add('oculto');
+                        document.getElementById('pantallaJuego').classList.add('oculto');
+                        document.getElementById('seccionBanderas').classList.add('oculto');
+                        document.getElementById('pantallaError').classList.remove('oculto');
+                    }
+                }
+            };
+
+            xmlhttp.send(`action=login&usuario=${encodeURIComponent(usuario)}&password=${encodeURIComponent(password)}&lang=${encodeURIComponent(idiomaActual)}`);
+        }
+
+        // Petición AJAX para jugar una ronda
+        function procesarJuego() {
+            const numero = parseInt(document.getElementById('inputNumero').value, 10);
+            if (isNaN(numero) || numero < 1 || numero > 10) {
+                alert(idiomaActual === 'ES' ? 'Por favor introduce un número entre 1 y 10.' : 'Please enter a number between 1 and 10.');
+                return;
+            }
+
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'backend.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    const respuesta = JSON.parse(xmlhttp.responseText);
+                    if (respuesta.success) {
+                        ultimoResultadoJuego = respuesta.resultado;
+
+                        document.getElementById('valMiNumero').textContent = respuesta.miNumero;
+                        document.getElementById('valTuNumero').textContent = respuesta.tuNumero;
+                        document.getElementById('valMensajeResultado').textContent = respuesta.mensaje;
+
+                        document.getElementById('contenedorResultado').classList.remove('oculto');
+                    }
+                }
+            };
+
+            xmlhttp.send(`action=jugar&numero=${encodeURIComponent(numero)}&lang=${encodeURIComponent(idiomaActual)}`);
+        }
+
+        function volverDeError() {
+            document.getElementById('pantallaError').classList.add('oculto');
+            document.getElementById('seccionBanderas').classList.remove('oculto');
+            document.getElementById('pantallaLogin').classList.remove('oculto');
+            document.getElementById('inputPassword').value = '';
+            document.getElementById('inputUsuario').focus();
+        }
+
+        function volverAlLogin() {
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'backend.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    document.getElementById('pantallaJuego').classList.add('oculto');
+                    document.getElementById('pantallaError').classList.add('oculto');
+                    document.getElementById('pantallaLogin').classList.remove('oculto');
+                    document.getElementById('seccionBanderas').classList.remove('oculto');
+
+                    document.getElementById('inputUsuario').value = ultimoUsuario;
+                    document.getElementById('inputPassword').value = '';
+                }
+            };
+
+            xmlhttp.send('action=salir');
+        }
+    </script>
+</body>
+</html>

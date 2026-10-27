@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio 5 - Lista de Empleados con Filtro AJAX</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        window.onload = function() {
+            filtrarEmpleados();
+        };
+
+        function filtrarEmpleados() {
+            const campo = document.getElementById('campoSelect').value;
+            const texto = document.getElementById('textoFiltro').value;
+
+            const xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'empleados.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    document.getElementById('cuerpoTabla').innerHTML = xmlhttp.responseText;
+                }
+            };
+
+            xmlhttp.send(`campo=${encodeURIComponent(campo)}&texto=${encodeURIComponent(texto)}`);
+        }
+    </script>
+</head>
+<body>
+
+    <div class="contenedor-principal">
+        <h2 class="titulo">Lista de empleados</h2>
+
+        <div class="barra-filtros">
+            <button type="button" id="btnFiltrar" onclick="filtrarEmpleados()">Filtrar por</button>
+
+            <select id="campoSelect">
+                <option value="nombre" selected>Nombre</option>
+                <option value="apellido">Apellido</option>
+                <option value="telefono">Teléfono</option>
+            </select>
+
+            <input type="text" id="textoFiltro" placeholder="" onkeydown="if(event.key === 'Enter') filtrarEmpleados()">
+        </div>
+
+        <table class="tabla-empleados">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpoTabla">
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -9,7 +9,7 @@
             // PISTA 1: Obtener el valor del radio button seleccionado
             const idiomaSeleccionado = document.querySelector('input[name="idioma"]:checked').value;
 
-            const xmlhttp = new XMLHttpRequest();
+            var xmlhttp = new XMLHttpRequest();
             xmlhttp.open('POST', 'v2_back.php', true);
             xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
