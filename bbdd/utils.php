@@ -1,6 +1,6 @@
 <?php
 function conectarMySql(
-    $schema = "cdcol",
+    $schema = "test",
     $usu = 'root',
     $pdw = '',
     $host = "localhost"

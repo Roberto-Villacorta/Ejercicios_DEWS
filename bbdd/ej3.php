@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
 
         if (!empty($nombre) && !empty($precio)) {
             if (!isset($_SESSION['memoria'])) {
+                crearTabla(conectarMySql());
                 $_SESSION['memoria'] = [];
             }
             $_SESSION['memoria'][] = [

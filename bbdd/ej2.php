@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($nombre) && !empty($precio)) {
         try {
             $conexion = conectarMySql();
+            crearTabla($conexion);
             // insertar() espera un array de productos, por lo que pasamos un array con el producto
             insertar($conexion, [
                 ['nombre' => $nombre, 'precio' => $precio]
