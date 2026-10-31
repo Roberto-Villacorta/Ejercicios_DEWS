@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var xmlhttp
+        function accionAjax(){
+            document.getElementById('resultado').innerHTML = xmlhttp.responseText;
+        }
+        function mesAnyo(accion){
+            var mes = document.getElementById('mes').value;
+            var anyo = document.getElementById('anyo').value;
+            if(anyo>0){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'ajax.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); 
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    accionAjax();
+                }
+            }
+            xmlhttp.send("mes=" + encodeURIComponent(mes) +
+                         "&anyo=" + encodeURIComponent(anyo)+
+                        "&accion="+encodeURIComponent(accion));}
+            else{
+                document.getElementById('resultado').innerHTML = "Año invalido"
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Planificación de vacaciones</h1>
+
+<form method="post" action="index.php">
+
+    <label for="mes">Mes:</label>
+
+    <select name="mes" id="mes">
+        <option value="1">Enero</option>
+        <option value="2">Febrero</option>
+        <option value="3">Marzo</option>
+        <option value="4">Abril</option>
+        <option value="5">Mayo</option>
+        <option value="6">Junio</option>
+        <option value="7">Julio</option>
+        <option value="8">Agosto</option>
+        <option value="9">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+    </select>
+
+    <label for="anio">Año:</label>
+    <input type="number" name="anio" id="anio"
+           min="1" value="2027" required>
+
+    <button type="button" onclick="mesAnyo('select')">
+        Consultar días 
+    </button>
+
+    <button type="button" onclick="mesAnyo('info')">
+        Información del mes
+    </button>
+
+    </form>
+    <div id = "resultado">
+
+    </div>
+</body>
+</html>

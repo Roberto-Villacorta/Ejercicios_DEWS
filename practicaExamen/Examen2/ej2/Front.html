@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var xmlhttp
+        function accionAjax(){
+            document.getElementById('resultado').innerHTML = xmlhttp.responseText;
+        }
+        function consultarInfo(accion){
+            var numero = document.getElementById('numero').value;
+            if(numero>0){
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', 'ajax.php', true);
+            xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); 
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                    accionAjax();
+                }
+            }
+            xmlhttp.send("numero=" + encodeURIComponent(numero) +
+                         "&accion="+encodeURIComponent(accion));}
+            else{
+                document.getElementById('resultado').innerHTML = "Número invalido"
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <h1>Planificación de vacaciones</h1>
+
+<form method="post" action="index.php">
+
+
+    <label for="numero">Introduce un número de año:</label>
+    <input type="number" name="numero" id="numero" >
+
+    <button type="button" onclick="consultarInfo('tabla')">
+        Consultar tabla
+    </button>
+
+    <button type="button" onclick="consultarInfo('info')">
+        Información del número
+    </button>
+
+    </form>
+    <div id = "resultado">
+
+    </div>
+</body>
+</html>
