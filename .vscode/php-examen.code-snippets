@@ -93,10 +93,10 @@
         "prefix": "funhtml",
         "body": [
             "function ${1:generarHTML}($${2:dato}) {",
-            "    $html = \"${3:<div>}\";",
-            "    ${4:// Construir HTML concatenando con .=}",
-            "    $html .= \"${5:</div>}\";",
-            "    return $html;",
+            "    $$html = \"${3:<div>}\";",
+            "    $${4:// Construir HTML concatenando con .=}",
+            "    $$html .= \"${5:</div>}\";",
+            "    return $$html;",
             "}"
         ],
         "description": "Función auxiliar que construye y devuelve HTML sin echo"
@@ -159,8 +159,8 @@
             "<?php",
             "require_once __DIR__ . '/${1:utilidades.php}';",
             "if (isset($_POST['${2:accion}'], $_POST['${3:valor}'])) {",
-            "    $accion = $_POST['${2:accion}'];",
-            "    $valor = $_POST['${3:valor}'];",
+            "    $$accion = $_POST['${2:accion}'];",
+            "    $$valor = $_POST['${3:valor}'];",
             "    if ($accion === '${4:consultar}') {",
             "        echo ${5:generarHTML}($valor);",
             "    } else {",
@@ -173,6 +173,14 @@
             "}"
         ],
         "description": "Backend PHP que responde a una petición AJAX con HTML"
+    },
+    "PHP:header-location": {
+        "prefix": "head",
+        "body": [
+            "header('Location: p3.php');",
+            "exit;"
+        ],
+        "description": "Vete a otra pagina"
     },
     "JavaScript: XMLHttpRequest POST": {
         "prefix": "xhrpost",
