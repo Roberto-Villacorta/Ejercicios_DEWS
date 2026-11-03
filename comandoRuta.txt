@@ -1,1 +1,2 @@
 mklink /j rutaXampp Rutaqueusamos
+mklink /j C:\xampp\htdocs\examen D:\Users\alumno\Desktop\VillacortaRoberto
