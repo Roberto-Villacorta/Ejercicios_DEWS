@@ -1,0 +1,206 @@
+{
+    "PHP: estructura completa": {
+        "prefix": "phpbase",
+        "body": [
+            "<?php",
+            "// ${1:codigo PHP}",
+            "?>",
+            "<!DOCTYPE html>",
+            "<html lang=\"es\">",
+            "<head>",
+            "    <meta charset=\"UTF-8\">",
+            "    <title>${2:Titulo}</title>",
+            "</head>",
+            "<body>",
+            "    ${3:contenido HTML}",
+            "</body>",
+            "</html>"
+        ],
+        "description": "Plantilla básica de página PHP con codificación UTF-8"
+    },
+    "PHP: procesar formulario POST": {
+        "prefix": "post",
+        "body": [
+            "if ($_SERVER['REQUEST_METHOD'] === 'POST') {",
+            "    $${1:valor} = $_POST['${2:campo}'] ?? '';",
+            "    ${3:// Procesar dato}",
+            "}"
+        ],
+        "description": "Comprueba POST y recoge un campo"
+    },
+    "PHP: detectar botón submit": {
+        "prefix": "accion",
+        "body": [
+            "if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {",
+            "    switch ($_POST['accion']) {",
+            "        case '${1:anadir}':",
+            "            ${2:// Accion 1}",
+            "            break;",
+            "        case '${3:borrar}':",
+            "            ${4:// Accion 2}",
+            "            break;",
+            "        case '${5:generar}':",
+            "            ${6:// Accion 3}",
+            "            break;",
+            "    }",
+            "}"
+        ],
+        "description": "Distingue acciones de botones submit con el mismo name"
+    },
+    "HTML: formulario POST con acciones": {
+        "prefix": "formpost",
+        "body": [
+            "<form method=\"post\" action=\"${1:index.php}\">",
+            "    <label for=\"${2:campo}\">${3:Campo}:</label>",
+            "    <input type=\"${4:text}\" name=\"${2:campo}\" id=\"${2:campo}\" value=\"<?= htmlspecialchars($${5:valor} ?? '') ?>\">",
+            "    <button type=\"submit\" name=\"accion\" value=\"${6:anadir}\">${7:Añadir}</button>",
+            "    <button type=\"submit\" name=\"accion\" value=\"${8:generar}\">${9:Generar}</button>",
+            "</form>"
+        ],
+        "description": "Formulario POST con botones que comparten name=accion"
+    },
+    "PHP: iniciar sesión y crear array": {
+        "prefix": "sesion",
+        "body": [
+            "<?php",
+            "session_start();",
+            "if (!isset($_SESSION['${1:lista}'])) {",
+            "    $_SESSION['${1:lista}'] = [];",
+            "}",
+            "?>"
+        ],
+        "description": "Inicia o recupera sesión e inicializa un array"
+    },
+    "PHP: añadir a array de sesión": {
+        "prefix": "sesadd",
+        "body": [
+            "if (!in_array($${1:valor}, $_SESSION['${2:lista}'], true)) {",
+            "    $_SESSION['${2:lista}'][] = $${1:valor};",
+            "}"
+        ],
+        "description": "Añade un valor a un array de sesión evitando duplicados"
+    },
+    "PHP: recorrer array": {
+        "prefix": "foreach",
+        "body": [
+            "foreach ($${1:array} as $${2:elemento}) {",
+            "    ${3:// Usar elemento}",
+            "}"
+        ],
+        "description": "Bucle foreach"
+    },
+    "PHP: función que devuelve HTML": {
+        "prefix": "funhtml",
+        "body": [
+            "function ${1:generarHTML}($${2:dato}) {",
+            "    $html = \"${3:<div>}\";",
+            "    ${4:// Construir HTML concatenando con .=}",
+            "    $html .= \"${5:</div>}\";",
+            "    return $html;",
+            "}"
+        ],
+        "description": "Función auxiliar que construye y devuelve HTML sin echo"
+    },
+    "PHP: incluir utilidades": {
+        "prefix": "requireutil",
+        "body": [
+            "require_once __DIR__ . '/${1:utilidades.php}';"
+        ],
+        "description": "Incluye un archivo auxiliar una sola vez"
+    },
+    "PHP: validar entero": {
+        "prefix": "validarint",
+        "body": [
+            "$${1:valor} = filter_input(INPUT_POST, '${2:campo}', FILTER_VALIDATE_INT);",
+            "if ($${1:valor} === false || $${1:valor} === null || $${1:valor} < ${3:1} || $${1:valor} > ${4:100}) {",
+            "    $${5:error} = '${6:Valor no válido}';",
+            "} else {",
+            "    ${7:// Dato válido}",
+            "}"
+        ],
+        "description": "Valida entero recibido por POST y comprueba rango"
+    },
+    "PHP: crear cookie": {
+        "prefix": "cookie",
+        "body": [
+            "setcookie('${1:nombre}', '${2:valor}', time() + ${3:3600}, '/');"
+        ],
+        "description": "Crea una cookie antes de generar cualquier salida"
+    },
+    "PHP: leer cookie": {
+        "prefix": "readcookie",
+        "body": [
+            "if (isset($_COOKIE['${1:nombre}'])) {",
+            "    $${2:valor} = $_COOKIE['${1:nombre}'];",
+            "} else {",
+            "    $${2:valor} = '${3:valor por defecto}';",
+            "}"
+        ],
+        "description": "Comprueba y lee una cookie"
+    },
+    "PHP: borrar cookie": {
+        "prefix": "delcookie",
+        "body": [
+            "setcookie('${1:nombre}', '', time() - 3600, '/');"
+        ],
+        "description": "Elimina una cookie haciendo que caduque"
+    },
+    "PHP: redireccionar": {
+        "prefix": "redirect",
+        "body": [
+            "header('Location: ${1:index.php}');",
+            "exit;"
+        ],
+        "description": "Redirecciona antes de enviar contenido y detiene el script"
+    },
+    "PHP: respuesta AJAX HTML": {
+        "prefix": "ajaxhtml",
+        "body": [
+            "<?php",
+            "require_once __DIR__ . '/${1:utilidades.php}';",
+            "if (isset($_POST['${2:accion}'], $_POST['${3:valor}'])) {",
+            "    $accion = $_POST['${2:accion}'];",
+            "    $valor = $_POST['${3:valor}'];",
+            "    if ($accion === '${4:consultar}') {",
+            "        echo ${5:generarHTML}($valor);",
+            "    } else {",
+            "        http_response_code(400);",
+            "        echo 'Acción no válida';",
+            "    }",
+            "} else {",
+            "    http_response_code(400);",
+            "    echo 'Faltan parámetros';",
+            "}"
+        ],
+        "description": "Backend PHP que responde a una petición AJAX con HTML"
+    },
+    "JavaScript: XMLHttpRequest POST": {
+        "prefix": "xhrpost",
+        "body": [
+            "function ${1:consultar}() {",
+            "    const xhr = new XMLHttpRequest();",
+            "    const datos = '${2:accion=consultar&valor=}'+encodeURIComponent(document.getElementById('${3:campo}').value);",
+            "    xhr.open('POST', '${4:ajax.php}', true);",
+            "    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');",
+            "    xhr.onreadystatechange = function () {",
+            "        if (xhr.readyState === 4) {",
+            "            if (xhr.status === 200) {",
+            "                document.getElementById('${5:resultado}').innerHTML = xhr.responseText;",
+            "            } else {",
+            "                document.getElementById('${5:resultado}').textContent = 'Error en la petición';",
+            "            }",
+            "        }",
+            "    };",
+            "    xhr.send(datos);",
+            "}"
+        ],
+        "description": "Petición AJAX POST con XMLHttpRequest y muestra respuesta HTML"
+    },
+    "PHP: mostrar variable escapada": {
+        "prefix": "e",
+        "body": [
+            "<?= htmlspecialchars($${1:valor}, ENT_QUOTES, 'UTF-8') ?>"
+        ],
+        "description": "Muestra texto escapando caracteres HTML"
+    }
+}
