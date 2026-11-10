@@ -18,7 +18,4 @@ SQL;
 	$ok = false;
 }
 
-// Patrón PRG
 header("Location:productoDpostMensaje.php?ok=$ok");
-?>
-

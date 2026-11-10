@@ -23,7 +23,4 @@ $sentencia->bindParam(':categoria',   $categoria);
 
 $ok = $sentencia->execute();
 
-// Patrón PRG
 header("Location:productoCpostMensaje.php?ok=$ok");
-?>
-

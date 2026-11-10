@@ -1,8 +1,8 @@
 <?php
 include('util.php');
 
-// ---------------FUNCIONES------------------
-function datosProducto($ref) {
+function datosProducto($ref)
+{
 	global $bd;
 	$query = <<<SQL
 		SELECT * FROM PRODUCTOS
@@ -13,8 +13,6 @@ SQL;
 	$sentencia->execute();
 	return $sentencia->fetchAll(PDO::FETCH_ASSOC);
 }
-
-// ---------------COMIENZO------------------
 
 $bd = conectarMySql();
 
@@ -54,8 +52,13 @@ HTML;
 			Precio (€)    <input type="number" name="precio" step="0.01" min="0" value="{$prod['precio']}" $activo><br/>
 HTML;
 
-			$cats = ['electronica' => 'Electrónica', 'ropa' => 'Ropa',
-			         'alimentacion' => 'Alimentación', 'hogar' => 'Hogar', 'deporte' => 'Deporte'];
+			$cats = [
+				'electronica' => 'Electrónica',
+				'ropa' => 'Ropa',
+				'alimentacion' => 'Alimentación',
+				'hogar' => 'Hogar',
+				'deporte' => 'Deporte'
+			];
 			$activoCat = $accion == 'R' ? 'disabled="disabled"' : '';
 
 			$opcionesHTML = '';
@@ -94,5 +97,3 @@ HTML;
 
 HTML;
 }
-?>
-
