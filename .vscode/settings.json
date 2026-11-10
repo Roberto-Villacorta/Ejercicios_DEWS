@@ -1,5 +1,8 @@
 {
     "code-runner.runInTerminal": true,
     "code-runner.clearPreviousOutput": true,
-    "code-runner.saveFileBeforeRun": true
+    "code-runner.saveFileBeforeRun": true,
+    "github.copilot.enable": { "*": false },
+    "chat.disableAIFeatures": true
+   
 }
