@@ -1,28 +1,20 @@
 <?php
 include('util.php');
 
-$ref         = isset($_POST['ref'])         && !empty($_POST['ref'])         ? $_POST['ref']         : null;
 $nombre      = isset($_POST['nombre'])      && !empty($_POST['nombre'])      ? $_POST['nombre']      : '';
-$descripcion = isset($_POST['descripcion'])                                  ? $_POST['descripcion'] : '';
-$precio      = isset($_POST['precio'])      && !empty($_POST['precio'])      ? $_POST['precio']      : 0;
-$categoria   = isset($_POST['categoria'])   && !empty($_POST['categoria'])   ? $_POST['categoria']   : '';
+$precio      = isset($_POST['precio'])      && !empty($_POST['precio'])      ? $_POST['precio']      : '';
 
-if ($ref != null) {
+if ($nombre != null && $precio != null) {
 	$bd = conectarMySql();
 	$query = <<<SQL
-		UPDATE PRODUCTOS
+		UPDATE productos
 		SET nombre      = :nombre,
-		    descripcion = :descripcion,
-		    precio      = :precio,
-		    categoria   = :categoria
-		WHERE ref = :ref
+		    precio      = :precio
+		WHERE nombre = :nombre
 SQL;
 	$sentencia = $bd->prepare($query);
-	$sentencia->bindParam(':ref',         $ref);
-	$sentencia->bindParam(':nombre',      $nombre);
-	$sentencia->bindParam(':descripcion', $descripcion);
-	$sentencia->bindParam(':precio',      $precio);
-	$sentencia->bindParam(':categoria',   $categoria);
+	$sentencia->bindParam(':nombre', $nombre);
+	$sentencia->bindParam(':precio', $precio);
 	$ok = $sentencia->execute();
 } else {
 	$ok = false;
@@ -30,5 +22,3 @@ SQL;
 
 // Patrón PRG
 header("Location:productoUpostMensaje.php?ok=$ok");
-?>
-

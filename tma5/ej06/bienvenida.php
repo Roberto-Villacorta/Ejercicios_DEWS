@@ -3,7 +3,7 @@ include('util.php');
 
 $bd = conectarMySql();
 
-$sentencia = $bd->prepare("SELECT * FROM PRODUCTOS ORDER BY 1");
+$sentencia = $bd->prepare("SELECT * FROM productos ORDER BY 1");
 $sentencia->execute();
 $productos = $sentencia->fetchAll(PDO::FETCH_ASSOC);
 

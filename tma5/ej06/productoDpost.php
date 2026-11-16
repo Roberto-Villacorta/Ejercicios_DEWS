@@ -6,11 +6,11 @@ $ref = isset($_POST['ref']) && !empty($_POST['ref']) ? $_POST['ref'] : null;
 if ($ref != null) {
 	$bd = conectarMySql();
 	$query = <<<SQL
-		DELETE FROM PRODUCTOS
-		WHERE ref = :ref
+		DELETE FROM productos
+		WHERE nombre = :nombre
 SQL;
 	$sentencia = $bd->prepare($query);
-	$sentencia->bindParam(':ref', $ref);
+	$sentencia->bindParam(':nombre', $nombre);
 	$ok = $sentencia->execute();
 	$ok = ($ok && ($sentencia->rowCount() > 0));
 } else {
@@ -19,5 +19,3 @@ SQL;
 
 // Patrón PRG
 header("Location:productoDpostMensaje.php?ok=$ok");
-?>
-

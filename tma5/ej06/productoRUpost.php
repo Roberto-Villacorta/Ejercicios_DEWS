@@ -6,8 +6,8 @@ function datosProducto($ref)
 {
 	global $bd;
 	$query = <<<SQL
-		SELECT * FROM PRODUCTOS
-		WHERE ref = :ref
+		SELECT * FROM productos
+		WHERE nombre = :ref
 SQL;
 	$sentencia = $bd->prepare($query);
 	$sentencia->bindParam(':ref', $ref);
@@ -60,26 +60,11 @@ $cats = [
 			<legend>Datos del producto</legend>
 			<form action="productoUpost.php" method="post">
 
-				<label>Referencia</label>
-				<input type="text" name="ref" value="<?= htmlspecialchars($prod['ref']) ?>" readonly="readonly"><br />
-
 				<label>Nombre</label>
 				<input type="text" name="nombre" value="<?= htmlspecialchars($prod['nombre']) ?>" <?= $activo ?>><br />
 
-				<label>Descripción</label>
-				<input type="text" name="descripcion" value="<?= htmlspecialchars($prod['descripcion']) ?>" <?= $activo ?>><br />
-
 				<label>Precio (€)</label>
 				<input type="number" step="0.01" min="0" name="precio" value="<?= htmlspecialchars($prod['precio']) ?>" <?= $activo ?>><br />
-
-				<label>Categoría</label>
-				<select name="categoria" <?= $activoCat ?>>
-					<?php foreach ($cats as $val => $etiqueta): ?>
-						<option value="<?= $val ?>" <?= $prod['categoria'] == $val ? 'selected="selected"' : '' ?>>
-							<?= $etiqueta ?>
-						</option>
-					<?php endforeach; ?>
-				</select><br />
 
 				<?php if ($accion == 'U'): ?>
 					<button type="submit" class="btn-actualizar">Actualizar</button>
